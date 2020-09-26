@@ -1,0 +1,255 @@
+{% extends "Orders/layout.html" %}
+
+{% block heading %}
+
+
+	
+{% endblock %}
+
+{% block body %}
+<div class="page-flex">
+
+	<div class="cart-header">
+{% if user.is_authenticated %}
+		<div class="header">
+			<h1>Items in Your Cart: {{ user.get_username|capfirst }}</h1>
+		</div>
+		<div class="add-item-button">
+			<a href="{% url 'index' %}"><button id="add_item" type="button" class="btn btn-primary">Add Item</button></a>
+		</div>
+	</div>
+
+	<div class="cart-items">
+
+		{% for cart in carts %}
+			{% if cart.ordered == False %}
+				{% if cart.pizza_order.style == "Sicilian Pizza" or cart.pizza_order.style == "Regular Pizza" %}
+					<div class="cart-flex-div" id="pizza_cart-{{ forloop.counter0 }}">
+						<div class="cart-remove_div">
+							<div class="cart-title">{{cart.pizza_order.style}} - {{cart.pizza_order.toppings}} Topping</div>
+							<div>
+								<form action="{% url 'cart' %}" method="post">
+			        				{% csrf_token %}
+									<input type="hidden" value="{{cart.pizza_order.id}}" name="remove"></input>
+									<button name="remove-cart" class="btn btn-primary" type="submit">Remove</button>
+								</form>
+							</div>
+						</div>
+						
+						<div>
+							<div class="cart-size">Size - <span class="cart-size-span">{{cart.pizza_order.size}}</span></div>
+							<div class="cart-toppings">Toppings</div>
+							{% if cart.pizza_order.toppings == '1' %}
+							<ul>
+								<li>{{cart.pizza_order.topping_1}}</li>
+							</ul>
+							{% elif cart.pizza_order.toppings == '2' %}
+								<ul>
+									<li>{{cart.pizza_order.topping_1}}</li>
+									<li>{{cart.pizza_order.topping_2}}</li>
+								</ul>
+							{% elif cart.pizza_order.toppings == '3' %}
+								<ul>
+									<li>{{cart.pizza_order.topping_1}}</li>
+									<li>{{cart.pizza_order.topping_2}}</li>
+									<li>{{cart.pizza_order.topping_3}}</li>
+								</ul>
+							{% else %}
+								<ul>
+								<li>none</li>
+							</ul>
+
+							{% endif %}
+						</div>
+						<div>
+							<div class="cart-price">Price:<span class="price-item"> {{cart.pizza_order.price }}</span></div>
+						</div>
+					</div>
+					<br>
+				{% elif cart.pizza_order.style == 'Subs' %}
+					<div class="cart-flex-div" id="pizza_cart-{{ forloop.counter0 }}">
+						<div class="cart-remove_div">
+							<div class="cart-title">Sub - {{cart.pizza_order.toppings}} Topping</div>
+							<div>
+								<form action="{% url 'cart' %}" method="post">
+			        				{% csrf_token %}
+									<input type="hidden" value="{{cart.pizza_order.id}}" name="remove"></input>
+									<button name="remove-cart" class="btn btn-primary" type="submit">Remove</button>
+								</form>
+							</div>
+						</div>
+						
+						<div>
+							<div class="cart-size">Size - <span class="cart-size-span">{{cart.pizza_order.size}}</span></div>
+							<div class="cart-extras">Extras</div>
+								<ul>
+									<li>{{cart.pizza_order.extra_1}}</li>
+									<li>{{cart.pizza_order.extra_2}}</li>
+									<li>{{cart.pizza_order.extra_3}}</li>
+									<li>{{cart.pizza_order.extra_4}}</li>
+								</ul>
+						</div>
+						<div>
+							<div class="cart-price">Price:<span class="price-item"> {{cart.pizza_order.price }}</span></div>
+						</div>
+					</div>
+					<br>
+				{% elif cart.pizza_order.style == 'Platter' %}
+					<div class="cart-flex-div" id="pizza_cart-{{ forloop.counter0 }}">
+						<div class="cart-remove_div">
+							<div class="cart-title">Platter - {{cart.pizza_order.toppings}} Topping</div>
+							<div>
+								<form action="{% url 'cart' %}" method="post">
+			        				{% csrf_token %}
+									<input type="hidden" value="{{cart.pizza_order.id}}" name="remove"></input>
+									<button name="remove-cart" class="btn btn-primary" type="submit">Remove</button>
+								</form>
+							</div>
+						</div>
+						
+						<div>
+							<div class="cart-size">Size - <span class="cart-size-span">{{cart.pizza_order.size}}</span></div>
+						</div>
+						<div>
+							<div class="cart-price">Price:<span class="price-item"> {{cart.pizza_order.price }}</span></div>
+						</div>
+					</div>
+					<br>
+
+				{% endif %}
+			
+			{% endif %}	
+		{%endfor%}
+		<div class="total-cart-flex">
+			<div class="cart-total-div">Total: <span id="cart_total"></span></div>
+			<div class="order-button">
+				<div>
+					<form action="{% url 'cart' %}" method="post">
+					{% csrf_token %}
+						<button class="btn btn-danger btn-lg " type="submit" name="cart-order">Order</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="past-header">
+		<div>
+			<h1>Past Orders:</h1>
+		</div>
+		{% for past in carts %}
+			{% if past.ordered == True %}
+				{% if past.pizza_order.style == "Sicilian Pizza" or past.pizza_order.style == "Regular Pizza" %}
+					<div class="cart-flex-div" id="pizza_cart-{{ forloop.counter0 }}">
+						<div class="cart-remove_div">
+							<div class="cart-title">{{past.pizza_order.style}} - {{past.pizza_order.toppings}} Topping</div>
+						</div>
+						
+						<div>
+							<div class="cart-size">Size - <span class="cart-size-span">{{past.pizza_order.size}}</span></div>
+							<div class="cart-toppings">Toppings</div>
+							{% if past.pizza_order.toppings == '1' %}
+							<ul>
+								<li>{{past.pizza_order.topping_1}}</li>
+							</ul>
+							{% elif past.pizza_order.toppings == '2' %}
+								<ul>
+									<li>{{past.pizza_order.topping_1}}</li>
+									<li>{{past.pizza_order.topping_2}}</li>
+								</ul>
+							{% elif past.pizza_order.toppings == '3' %}
+								<ul>
+									<li>{{past.pizza_order.topping_1}}</li>
+									<li>{{past.pizza_order.topping_2}}</li>
+									<li>{{past.pizza_order.topping_3}}</li>
+								</ul>
+							{% else %}
+								<ul>
+								<li>none</li>
+							</ul>
+
+							{% endif %}
+						</div>
+						<div>
+							<div class="cart-price">Price:<span class=""> {{past.pizza_order.price }}</span></div>
+						</div>
+					</div>
+					<br>
+				{% elif past.pizza_order.style == 'Subs' %}
+					<div class="cart-flex-div" id="pizza_cart-{{ forloop.counter0 }}">
+						<div class="cart-remove_div">
+							<div class="cart-title">Sub - {{past.pizza_order.toppings}} Topping</div>
+						</div>
+						
+						<div>
+							<div class="cart-size">Size - <span class="cart-size-span">{{past.pizza_order.size}}</span></div>
+							<div class="cart-extras">Extras</div>
+								<ul>
+									<li>{{past.pizza_order.extra_1}}</li>
+									<li>{{past.pizza_order.extra_2}}</li>
+									<li>{{past.pizza_order.extra_3}}</li>
+									<li>{{past.pizza_order.extra_4}}</li>
+								</ul>
+						</div>
+						<div>
+							<div class="cart-price">Price:<span> {{past.pizza_order.price }}</span></div>
+						</div>
+					</div>
+					<br>
+				{% elif past.pizza_order.style == 'Platter' %}
+					<div class="cart-flex-div" id="pizza_cart-{{ forloop.counter0 }}">
+						<div class="cart-remove_div">
+							<div class="cart-title">Platter - {{past.pizza_order.toppings}} Topping</div>
+						</div>
+						
+						<div>
+							<div class="cart-size">Size - <span class="cart-size-span">{{past.pizza_order.size}}</span></div>
+						</div>
+						<div>
+							<div class="cart-price">Price:<span> {{past.pizza_order.price }}</span></div>
+						</div>
+					</div>
+					<br>
+
+				{% endif %}
+			{% endif %}
+			
+			
+		{% endfor %}
+	</div>
+{% else %}
+		<span id="logged_out" class="navbar-text welcome-notice">You are not logged in <a href="{% url 'login' %}">Click Here</a></span>
+{% endif %}
+
+</div>
+	
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+//Jquery
+	$(document).ready(function(){
+
+		var total_price = 0;
+		$('.price-item').each(function(){
+			var cart_price = $(this).html();
+			total_price += parseFloat(cart_price);
+			//console.log(cart_price);
+		});
+		
+		$('#cart_total').html((total_price).toFixed(2))
+
+		if ($('.cart-items > .cart-flex-div').length == 0 ){
+			$('.cart-items').prepend('<div id="empty_cart"><div><h4>Your cart is empty!</h4></div>\
+									<div><h4>Click the "Add Item" button!</h4></div></div>');
+		}else{
+			$('#empty_cart').remove();
+			console.log('There are cart items');
+		}
+
+
+	});
+	
+</script>
+
+{% endblock %}

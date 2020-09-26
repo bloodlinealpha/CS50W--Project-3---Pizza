@@ -1,0 +1,201 @@
+{% extends "Orders/layout.html" %}
+
+{% block heading %}
+
+
+	
+{% endblock %}
+
+{% block body %}
+<div class="page-flex">
+
+
+	
+	
+	
+	<div class="cart-header">
+{% if user.is_staff %}
+	<div class="past-header">
+		<div>
+			<h1>Pending Orders:</h1>
+
+		</div>
+		{% for name in pending_2 %}
+		
+			<div class="accordion" id="accordionExample">
+			  <div class="card">
+			    <div class="card-header" id="headingOne">
+			      <h2 class="mb-0">
+			        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+
+			          Name: {{name.user}}
+
+			         
+			        </button>
+			      </h2>
+			    </div>
+			    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+			      <div id="{{name}}_body" class="card-body">
+			      {% for item in name.items %}
+
+			       	<div class="admin-item">
+			       		<div>#{{forloop.counter}}</div>
+			       		<div>Item: <span>{{item.items.pizza_order.style}}</span></div>
+			       		<div>Topping: <span>{{item.items.pizza_order.toppings}}</span></div>
+			       		<div>Size: <span>{{item.items.pizza_order.size}}</span></div>
+			       		{% if item.items.pizza_order.style == "Sicilian Pizza" or item.items.pizza_order.style == "Regular Pizza" %}
+			       		<div>Topping 1: <span>{{item.items.pizza_order.topping_1}}</span></div>
+			       		<div>Topping 2: <span>{{item.items.pizza_order.topping_2}}</span></div>
+			       		<div>Topping 3: <span>{{item.items.pizza_order.topping_3}}</span></div>
+			       		{% else %}
+			       		<div>Extra 1: <span>{{item.items.pizza_order.extra_1}}</span></div>
+			       		<div>Extra 2: <span>{{item.items.pizza_order.extra_2}}</span></div>
+			       		<div>Extra 3: <span>{{item.items.pizza_order.extra_3}}</span></div>
+			       		<div>Extra 4: <span>{{item.items.pizza_order.extra_4}}</span></div>
+			       		{% endif %}
+			       		<div>
+			       			<form class="update-forms" action="{% url 'order' %}" method="post">
+			       			{% csrf_token %}
+			       				<input type="hidden" name="order-id" value="{{item.id}}"></input>
+			       				<label for="order_update">Status:</label>
+			       				<select id="order_update" name="status">
+			       					<option value="{{item.status}}">Pending</option>
+			       					<option value="Complete">Complete</option>
+			       				</select>
+			       				<button class="btn btn-danger" type="submit" name="status_change">Confirm Change</button>
+			       			</form>
+			       		</div>
+			       	</div>
+			       {% endfor%}
+			      </div>
+			    </div>
+			  </div>
+			</div>
+		
+		{% endfor%}
+			
+	</div>
+
+	<div class="past-header">
+		<div>
+			<h1>Completed Orders:</h1>
+		</div>
+		{% for pend in pending %}
+				{% if pend.items.pizza_order.style == "Sicilian Pizza" or pend.items.pizza_order.style == "Regular Pizza" %}
+					<div class="cart-flex-div" id="pizza_cart-{{ forloop.counter0 }}">
+						<div class="cart-remove_div">
+							<div class="cart-title">Order Details</div>
+						</div>
+						<div>
+							<div class="cart-size">Item - <span class="cart-size-span">{{pend.items.pizza_order.style}}</span></div>
+						</div>
+						<div>
+							<div class="cart-size">Topping - <span class="cart-size-span">{{pend.items.pizza_order.toppings}}</span></div>
+						</div>
+						
+						<div>
+							<div class="cart-size">Size - <span class="cart-size-span">{{pend.items.pizza_order.size}}</span></div>
+							<div class="cart-toppings">Toppings</div>
+							{% if pend.items.pizza_order.toppings == '1' %}
+							<ul>
+								<li>{{pend.items.pizza_order.topping_1}}</li>
+							</ul>
+							{% elif pend.items.pizza_order.toppings == '2' %}
+								<ul>
+									<li>{{pend.items.pizza_order.topping_1}}</li>
+									<li>{{pend.items.pizza_order.topping_2}}</li>
+								</ul>
+							{% elif pend.items.pizza_order.toppings == '3' %}
+								<ul>
+									<li>{{pend.items.pizza_order.topping_1}}</li>
+									<li>{{pend.items.pizza_order.topping_2}}</li>
+									<li>{{pend.items.pizza_order.topping_3}}</li>
+								</ul>
+							{% else %}
+								<ul>
+								<li>none</li>
+							</ul>
+
+							{% endif %}
+						</div>
+						<div>
+							<div class="cart-price">Price:<span class=""> {{pend.items.pizza_order.price }}</span></div>
+						</div>
+					</div>
+					<br>
+				{% elif pend.items.pizza_order.style == 'Subs' %}
+					<div class="cart-flex-div" id="pizza_cart-{{ forloop.counter0 }}">
+						<div class="cart-remove_div">
+							<div class="cart-title">Sub - {{pend.items.pizza_order.toppings}} Topping</div>
+						</div>
+						
+						<div>
+							<div class="cart-size">Size - <span class="cart-size-span">{{pend.items.pizza_order.size}}</span></div>
+							<div class="cart-extras">Extras</div>
+								<ul>
+									<li>{{pend.items.pizza_order.extra_1}}</li>
+									<li>{{pend.items.pizza_order.extra_2}}</li>
+									<li>{{pend.items.pizza_order.extra_3}}</li>
+									<li>{{pend.items.pizza_order.extra_4}}</li>
+								</ul>
+						</div>
+						<div>
+							<div class="cart-price">Price:<span> {{pend.items.pizza_order.price }}</span></div>
+						</div>
+					</div>
+					<br>
+				{% elif pend.items.pizza_order.style == 'Platter' %}
+					<div class="cart-flex-div" id="pizza_cart-{{ forloop.counter0 }}">
+						<div class="cart-remove_div">
+							<div class="cart-title">Platter - {{pend.items.pizza_order.toppings}} Topping</div>
+						</div>
+						
+						<div>
+							<div class="cart-size">Size - <span class="cart-size-span">{{pend.items.pizza_order.size}}</span></div>
+						</div>
+						<div>
+							<div class="cart-price">Price:<span> {{pend.items.pizza_order.price }}</span></div>
+						</div>
+					</div>
+					<br>
+
+				{% endif %}
+			
+			
+		{% endfor %}
+	</div>
+{% else %}
+		<span id="logged_out" class="navbar-text welcome-notice">You are not logged in <a href="{% url 'login' %}">Click Here</a></span>
+{% endif %}
+
+</div>
+	
+{% endblock %}
+
+{% block scripts %}
+
+<script>
+//Jquery
+	$(document).ready(function(){
+		$('.admin-item > div').addClass('admin-headers');
+		$('.admin-item > div > span').addClass('admin-span');
+
+		$('.update-forms').each(function(){
+			$(this).on('submit', function(e){
+				
+				if (confirm("Are you sure?")) {
+			        return true;
+			    }else{
+			    	 e.preventDefault();
+			    }
+			   
+			});
+		});
+
+
+
+	});
+	
+</script>
+
+{% endblock %}

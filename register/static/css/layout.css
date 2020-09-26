@@ -1,0 +1,52 @@
+body{
+	background-color: white;
+}
+.navbar {
+	outline: 1px solid lightgrey;
+	min-height: 50px;
+}
+
+.menu-flex{
+
+	margin-top: 25px;
+	display: flex;
+	flex-direction: column;
+	
+	align-items: center;
+	min-height: calc(100vh - 83px);
+	height: auto;
+	width: 100%;
+
+}
+.pizza-flex{
+	display: flex;
+	flex-wrap: wrap;
+	max-width: 100%;
+	justify-content: space-around;
+	align-content: center;
+
+	
+}
+.menu-table{
+	border: none;
+	margin-bottom: 25px;
+	
+	
+}
+.menu-style{
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	
+	
+}
+.order-button{
+	width: 8rem;
+}
+.topping-list{
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	align-content: center;
+	height: auto;
+}
